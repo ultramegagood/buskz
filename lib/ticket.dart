@@ -4,7 +4,7 @@ part 'ticket.g.dart';
 
 @JsonSerializable()
 class BusTicket {
-  int? id;
+  String? id;
   String? busId;
   int? price;
   String? from;
@@ -14,6 +14,7 @@ class BusTicket {
   bool? isDiscounted;
   double? discount;
   double? discountedPrice;
+  DateTime? paymentDate;
 
   BusTicket(
       {this.id,

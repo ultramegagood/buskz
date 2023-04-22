@@ -1,6 +1,7 @@
 ///билет таңдау беті
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:uuid/uuid.dart';
 
 import '../service_locator.dart';
 import '../stores/ticket_store.dart';
@@ -56,9 +57,13 @@ class RoutesPage extends StatelessWidget {
                           child: Text('Растау'),
                           onPressed: () {
                             // Обработка оплаты
+                            var uuid = Uuid();
+
                             ticketStore.selectedBusTicket.busId = route['name'];
                             ticketStore.selectedBusTicket.price = price.toInt();
                             ticketStore.selectedBusTicket.distance = distance;
+                            ticketStore.selectedBusTicket.paymentDate = DateTime.now();
+                            ticketStore.selectedBusTicket.id = uuid.v4();
                             ticketStore.addTicket();
                             Navigator.of(context).pop();
                           },

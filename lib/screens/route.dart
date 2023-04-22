@@ -5,11 +5,15 @@ import 'package:buskz/stores/ticket_store.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:printing/printing.dart';
+import 'package:pdf/widgets.dart' as pw;
 
 import '../service_locator.dart';
 import '../ticket.dart';
 import '../widgets/drawer.dart';
+import '../widgets/receipt.dart';
 
 class Page1 extends StatefulWidget {
   @override
@@ -46,10 +50,8 @@ class _Page1State extends State<Page1> {
     return Scaffold(
         drawer: MyDrawer(
           name: FirebaseAuth.instance.currentUser?.displayName ?? "",
-          email: FirebaseAuth.instance.currentUser?.email ??"",
-          onAvatarChanged: (val){
-
-          },
+          email: FirebaseAuth.instance.currentUser?.email ?? "",
+          onAvatarChanged: (val) {},
         ),
         appBar: AppBar(
           title: const Text('Маршрутты таңдаңыз'),
@@ -170,6 +172,23 @@ class _Page1State extends State<Page1> {
                     child: const Text('Маршрутты таңдаңыз'),
                   ),
                   ...ticketStore.tickets.reversed.map((element) => ListTile(
+                        onTap: () {
+                          void _openReceiptPdf(BuildContext context) async {
+                            final pw.ThemeData theme = pw.ThemeData.withFont(
+                              bold:pw.Font.ttf(await rootBundle.load("assets/fonts/Montserrat/Montserrat-Bold.ttf")),
+                              base: pw.Font.ttf(await rootBundle.load("assets/fonts/Montserrat/Montserrat-Regular.ttf")),
+                            );
+
+                            final pdf = PaymentReceiptPdf(
+                              ticket: element,
+                              paymentMethod: 'Credit Card',
+                              paymentDate: element.paymentDate!, theme: theme,
+                            ).generatePdf();
+
+                            await Printing.layoutPdf(onLayout: (_) => pdf.save());
+                          }
+                          _openReceiptPdf(context);
+                        },
                         title: Text('Льгота: ${element.discountType}'),
                         subtitle: Text(
                             'Қайдан: ${element.from}\nҚайда: ${element.to}'),

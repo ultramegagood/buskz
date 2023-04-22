@@ -7,7 +7,7 @@ part of 'ticket.dart';
 // **************************************************************************
 
 BusTicket _$BusTicketFromJson(Map<String, dynamic> json) => BusTicket(
-      id: json['id'] as int?,
+      id: json['id'] as String?,
       price: json['price'] as int?,
       from: json['from'] as String?,
       to: json['to'] as String?,
@@ -17,7 +17,9 @@ BusTicket _$BusTicketFromJson(Map<String, dynamic> json) => BusTicket(
       discountedPrice: (json['discountedPrice'] as num?)?.toDouble(),
       busId: json['busId'] as String?,
       discountType: json['discountType'] as String?,
-    );
+    )..paymentDate = json['paymentDate'] == null
+        ? null
+        : DateTime.parse(json['paymentDate'] as String);
 
 Map<String, dynamic> _$BusTicketToJson(BusTicket instance) => <String, dynamic>{
       'id': instance.id,
@@ -30,4 +32,5 @@ Map<String, dynamic> _$BusTicketToJson(BusTicket instance) => <String, dynamic>{
       'isDiscounted': instance.isDiscounted,
       'discount': instance.discount,
       'discountedPrice': instance.discountedPrice,
+      'paymentDate': instance.paymentDate?.toIso8601String(),
     };
