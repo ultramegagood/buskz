@@ -1,11 +1,15 @@
+/// бірінші бет
+import 'package:buskz/screens/login.dart';
 import 'package:buskz/screens/tickets.dart';
 import 'package:buskz/stores/ticket_store.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 
 import '../service_locator.dart';
 import '../ticket.dart';
+import '../widgets/drawer.dart';
 
 class Page1 extends StatefulWidget {
   @override
@@ -31,15 +35,30 @@ class _Page1State extends State<Page1> {
   }
 
   @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    ticketStore.tickets.clear();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
+        drawer: MyDrawer(
+          name: FirebaseAuth.instance.currentUser?.displayName ?? "",
+          email: FirebaseAuth.instance.currentUser?.email ??"",
+          onAvatarChanged: (val){
+
+          },
+        ),
         appBar: AppBar(
           title: const Text('Маршрутты таңдаңыз'),
         ),
         body: SingleChildScrollView(
-          child: Observer(
-            builder: (context) {
-              return Column(
+          child: Observer(builder: (context) {
+            return Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const Text(
@@ -123,11 +142,14 @@ class _Page1State extends State<Page1> {
                                   ticketStore.selectedBusTicket.discountType =
                                       _selectedCategory;
                                   if (_selectedCategory == "обычный") {
-                                    ticketStore.selectedBusTicket.discount = 0.0;
+                                    ticketStore.selectedBusTicket.discount =
+                                        0.0;
                                   } else if (_selectedCategory == "студент") {
-                                    ticketStore.selectedBusTicket.discount = 0.5;
+                                    ticketStore.selectedBusTicket.discount =
+                                        0.5;
                                   } else if (_selectedCategory == "пенсионер") {
-                                    ticketStore.selectedBusTicket.discount = 0.3;
+                                    ticketStore.selectedBusTicket.discount =
+                                        0.3;
                                   } else if (_selectedCategory == "военный") {
                                     ticketStore.selectedBusTicket.discount = 1;
                                   }
@@ -140,24 +162,23 @@ class _Page1State extends State<Page1> {
                   ElevatedButton(
                     onPressed: () {
                       // Обработчик нажатия кнопки
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => RoutesPage()));
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => RoutesPage()));
                     },
                     child: const Text('Маршрутты таңдаңыз'),
                   ),
-                  ...ticketStore
-                      .tickets.reversed.map((element) => ListTile(
-                    title: Text('Льгота: ${element.discountType}'),
-                    subtitle: Text('Қайдан: ${element.from}\nҚайда: ${element.to}'),
-                    trailing: Text('${element.price}тг.'),
-                  ))
-
-
-
+                  ...ticketStore.tickets.reversed.map((element) => ListTile(
+                        title: Text('Льгота: ${element.discountType}'),
+                        subtitle: Text(
+                            'Қайдан: ${element.from}\nҚайда: ${element.to}'),
+                        trailing: Text('${element.price}тг.'),
+                      ))
                 ],
-              );
-            }
-          ),
+              ),
+            );
+          }),
         ));
   }
 }

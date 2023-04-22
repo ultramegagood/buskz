@@ -1,3 +1,4 @@
+/// МОдель конструктор BusTicket
 import 'package:json_annotation/json_annotation.dart';
 part 'ticket.g.dart';
 
@@ -25,9 +26,14 @@ class BusTicket {
       this.discountedPrice,
       this.busId,
       this.discountType});
-
+  ///
+  /// КОнвертация json-нан
+  ///
   factory BusTicket.fromJson(Map<String, dynamic> json) =>
       _$BusTicketFromJson(json);
 
+  ///
+  /// Конвертация в json-га
+  ///
   Map<String, dynamic> toJson() => _$BusTicketToJson(this);
 }

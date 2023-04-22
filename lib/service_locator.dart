@@ -1,15 +1,15 @@
-/// Синглотон обьект для всего проекта
+/// Бүкіл жобаға арналған жалғыз нысан
 
 import 'package:buskz/stores/ticket_store.dart';
 import 'package:get_it/get_it.dart';
 
 ///
-/// Синглотон обьект для всего проекта
+/// Бүкіл жоба үшін жалғыз сілтеме нысаны
 ///
 GetIt serviceLocator = GetIt.instance;
 
 ///
-/// Метод для регистраций синглтонов для проекта
+/// Жоба үшін синглтондарды тіркеу әдісі
 ///
 Future<void> serviceLocatorSetup() async {
   serviceLocator
